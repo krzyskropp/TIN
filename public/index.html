@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>FileBOX</title>    
+</head>
+    
+    <link rel="stylesheet" type="text/css" href="css/styl.css"
+    
+<body>
+    
+   <div id="menu">
+       <img src="./img/box.png">
+       <p>File</p>
+       
+           <ul>
+                    <li>Menu</li>
+                    <li>Add file</li>
+                    <li>Manage files</li>
+                    <li>Delete file</li>
+       
+              <form id        =  "uploadForm"
+     enctype   =  "multipart/form-data"
+     action    =  ""
+     method    =  "post"
+>
+<input type="file" name="userPhoto" />
+<input type="submit" value="Upload Image" name="submit">
+</form>
+               
+               
+           </ul>
+   </div>
+    
+    <div id="content">
+       <p>Filebox</p>
+        
+        <p>
+            <img id="button" src="./img/+.jpg">
+            <img id="button" src="./img/-.jpg">
+            <img id="button" src="./img/list.png">
+            <input id="search" type="text" placeholder=" search">
+        </p>
+      
+        <div id='table'>
+        
+            <table rules="rows">            
+                <tr>
+                    <td style='width: 35px'></td>
+                    <td>Name</td>
+                    <td>File Type</td>
+                    <td>Input Date</td>  
+                </tr>
+                
+                <tr>
+                    <td>
+                        <img src="./img/box.png" alt='' />
+                    </td>
+                    <td>books.jpg</td>
+                    <td>image (JPG)</td>
+                    <td>12.01.2014 19:05</td>
+                </tr>
+            </table>
+        
+        </div>
+       
+    </div>
+</body>
+
+ 
+    
+    
+</html>
