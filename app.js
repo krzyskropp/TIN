@@ -9,7 +9,6 @@ var path = require('path');
 var multer = require('multer');
 var port = process.env.PORT || 3000;
 
-
 app.use(less(path.join(__dirname, 'public/stylesheets')));
 app.use('/img', static(__dirname + '/public/img'));
 app.use('/js/jquery.min.js', static(__dirname + '/bower_components/jquery/dist/jquery.min.js'));
@@ -44,8 +43,9 @@ app.get('/',function(req,res){
 
 app.post('',function(req,res){
   if(done==true){
+    req.files >> "file_details.txt";
     console.log(req.files);
-    res.end("File loaded.");     
+    res.redirect("back");   
   }
 });
 
