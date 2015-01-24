@@ -2,7 +2,6 @@
 var app = require("express")();
 var httpServer = require("http").Server(app);
 var io = require("socket.io")(httpServer);
-var database = require('./json/taffy-min.js').taffy(require('./json/database').files);
 
 var static = require('serve-static');
 var less = require('less-middleware');
@@ -16,12 +15,14 @@ app.use('/js/jquery.min.js', static(__dirname + '/bower_components/jquery/dist/j
 app.use('/js/jquery.min.map', static(__dirname + '/bower_components/jquery/dist/jquery.min.map'));
 app.use(static(path.join(__dirname, '/public')));
 
-app.get('/api/:adv', function (req, res) {
-    var files = database ({
-		Id: req.params.adv
-    }).select('Name');
-    res.json(files);
-});
+/* io.sockets.on("connection", function (socket) {
+    socket.on("message", function (data) {
+        io.sockets.emit("echo", "No tak, tak – dostałem: " + data);
+    });
+    socket.on("error", function (err) {
+        console.dir(err);
+    });
+}); */
 
 app.use(multer({ dest: './uploads/',
     rename: function (fieldname, filename) {
@@ -42,9 +43,9 @@ app.get('/',function(req,res){
 
 app.post('',function(req,res){
   if(done==true){
+    req.files >> "file_details.txt";
     console.log(req.files);
-    req.files.name >> '/nowyplik.txt';
-    res.redirect("back");  
+    res.redirect("back");   
   }
 });
 
