@@ -15,23 +15,14 @@
        <img src="./img/box.png">
        <p>File</p>
        
-           <ul>
-                    <li>Menu</li>
-                    <li>Add file</li>
-                    <li>Manage files</li>
-                    <li>Delete file</li>
-       
-              <form id        =  "upload"
-     enctype   =  "multipart/form-data"
-     action    =  ""
-     method    =  "post"
->
-<li><input type="file" name="file" /></li>
-<li><input type="submit" value="Upload file" name="submit"></li>
-</form>
-               
-               
-           </ul>
+       <ul>
+            <a href="register" class="log"> Zarejestruj się</a><br>
+            <a href="login" class="log">Zaloguj się</a> <br>
+           <form id="uploadForm" enctype="multipart/form-data" action="" method="post">
+           <input type="file" name="userPhoto" /> <input type="submit" value="Upload Image" name="submit">
+           </form>
+       </ul>
+         
    </div>
     
     <div id="content">
@@ -41,7 +32,8 @@
             <img id="button" src="./img/+.jpg">
             <img id="button" src="./img/-.jpg">
             <img id="button" src="./img/list.png">
-            <input id="search" type="text" placeholder=" search">
+            <input id="search" type="text" placeholder=" search">    
+        
         </p>
       
         <div id='table'>
@@ -69,7 +61,7 @@
     </div>
 </body>
 
- 
-    
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="js/skrypt.js"></script>
     
 </html>

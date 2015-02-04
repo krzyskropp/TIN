@@ -9,6 +9,26 @@ body {
   left: 3%;
   float: left;
 }
+#menu a.log {
+  cursor: pointer;
+  text-decoration: none;
+  background-color: #ed8223;
+  color: #fff;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 18px;
+  line-height: 30px;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border: 0;
+  text-shadow: #c17c3a 0 -1px 0;
+  padding-top: 5px;
+  padding-bottom: 3px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 120px;
+  height: 32px;
+}
 #menu img {
   position: relative;
   left: 60px;
@@ -19,6 +39,26 @@ body {
   position: relative;
   top: 100px;
   list-style-type: none;
+}
+#menu ul #upload {
+  cursor: pointer;
+  text-decoration: none;
+  background-color: #ed8223;
+  color: #fff;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 18px;
+  line-height: 30px;
+  border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  border: 0;
+  text-shadow: #c17c3a 0 -1px 0;
+  padding-top: 5px;
+  padding-bottom: 3px;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 120px;
+  height: 32px;
 }
 #menu ul li {
   margin-top: 10px;
@@ -97,7 +137,8 @@ body {
   position: fixed;
   left: 300px;
   top: 130px;
-  width: 700px;
+  width: 1000px;
+  border-collapse: collapse;
 }
 @media (max-width: 1000px) {
   #content #table table {
@@ -105,8 +146,19 @@ body {
     left: 200px;
   }
 }
-#content #table table td {
+#content #table table tr {
+  border-bottom: 1px solid black;
+}
+#content #table table tr:first-child {
+  font-weight: bold;
+  font-size: 25px;
   border-bottom: 3px solid black;
+}
+#content #table table td {
+  padding: 1px;
+}
+#content #table table td:not(&:first-child) {
+  text-align: center;
 }
 #content #table table td img {
   width: 30px;

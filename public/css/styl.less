@@ -9,9 +9,28 @@ body{
     position: relative;
     width: 300px;
     left: 3%; 
-    float: left;
-      
+    float: left;        
     
+    a.log{
+        cursor:pointer;
+        text-decoration: none;
+        background-color:#ed8223;
+        color:#fff;
+        font-family:'Helvetica Neue',sans-serif;
+        font-size:18px;
+        line-height:30px;
+        border-radius:20px;
+        -webkit-border-radius:20px;
+        -moz-border-radius:20px;
+        border:0;
+        text-shadow:#C17C3A 0 -1px 0;
+        padding-top:5px;
+        padding-bottom: 3px;
+        padding-left: 20px;
+        padding-right:20px;
+        width:120px;
+        height:32px
+    }
     
     img{
         position: relative;
@@ -92,7 +111,8 @@ body{
         cursor: pointer;
       
     }     
-        
+    
+    
     p:first-child{
         font-family: 'Arial', cursive;
         font-size: 36px;  
@@ -138,16 +158,32 @@ body{
         position: fixed;
         left: 300px;
         top: 130px;
-        width: 700px;
+        width: 1000px;
+        border-collapse: collapse;
         
         @media (max-width: 1000px){
             width: 500px;
             left: 200px;
         }
         
-        td{
-            border-bottom: 3px solid black;
+        tr{
+            border-bottom: 1px solid black;
+            
+            &:first-child{
+                font-weight: bold;
+                font-size: 25px;
+                border-bottom: 3px solid black;
+            }
         }
+        
+        td{
+            padding: 1px;
+            
+            &:not(&:first-child){
+                text-align: center;
+            }
+        }
+        
         td img {
             width: 30px;
         }
