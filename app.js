@@ -9,6 +9,7 @@ var fs = require('fs');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var session = require('client-sessions');
+var mv = require('mv');
 
     var Schema = mongoose.Schema;
     var ObjectId = Schema.ObjectId;
@@ -41,7 +42,7 @@ app.use(static(path.join(__dirname, '/public')));
         mongoose.connect('mongodb://localhost/auth');
 
     // middleware
-        app.use(bodyParser.urlencoded({extended : true}));
+       app.use(bodyParser.urlencoded({extended : true}));
     // configure session
         app.use(session({           
             cookieName: 'session',
@@ -58,6 +59,9 @@ var outputFilename = 'public/json/database.json';
 var file_name = "";
 var date = new Date();
 var username = "";
+var json = "";
+var link = './uploads/' + username;
+var upload = "./uploads";
 
 function change(x)
 {
@@ -71,47 +75,57 @@ function change(x)
 }
 
 var d = " (" + date.getFullYear() + "-" + change(date.getMonth())+ "-" + change(date.getDay())+ " " + change(date.getHours())+ ":" + change(date.getMinutes())+ ":" + change(date.getSeconds()) + ")";
+  
+            
+                app.use(multer({ 
+                dest: './uploads',
+                    
+                rename: function (fieldname, filename) {               
+                        return filename + Date.now();
+                    },
 
-    fs.readFile(outputFilename, function (err, data) {
-        if (err) throw err;
-        var json = JSON.parse(data);
-           
-            app.use(multer({ dest: './uploads/' + username,                                                                          
-            rename: function (fieldname, filename) {               
-                    return filename + Date.now();
+                onFileUploadStart: function (file) {
+                  console.log(file.originalname + ' jest dodawany ...')
                 },
-                                                                   
-    onFileUploadStart: function (file) {
-      console.log(file.originalname + ' jest dodawany ...')
-    },
-    onFileUploadComplete: function (file, originalname, extension, size, encoding) {
-      console.log(file.originalname + ' dodano do  ' + file.path)
-      
-      var number = file.extension.length + 1;
-        
-      var file_data = {
-          "name": file.originalname.slice(0, -number)+d,
-          "originalname": file.originalname,
-          "extension": file.extension,
-          "size": Math.round((file.size/1024)) + "KB",
-          "encoding": file.encoding
-      };
-      
-      json.files.unshift(file_data);
-      
-      fs.writeFile(outputFilename,JSON.stringify(json, null, 4), function(err){
-         if (err){
-             console.log(err);
-         } 
-          else{
-              console.log("Dodano te dane?!");
-          }
-      });       
-                
-      done=true;
-    }
-}));
-        
+                onFileUploadComplete: function (file, originalname, extension, size, encoding) {
+                  console.log(file.originalname + ' dodano do  ' + file.path)
+                  
+                  mv(file.path, './uploads/' + username + '/' + file.originalname, function(err){
+                      if (err) throw "jakis error";
+                      console.log("przeniesiono?!");
+                  });
+                  
+                  
+                  var number = file.extension.length + 1;
+
+                  var file_data = {
+                      "name": file.originalname.slice(0, -number)+d,
+                      "originalname": file.originalname,
+                      "extension": file.extension,
+                      "size": Math.round((file.size/1024)) + "KB",
+                      "encoding": file.encoding
+                  };
+
+                  json.files.push(file_data);
+
+                    console.log("Username is : -----------" + username);    
+
+                  fs.writeFile('./uploads/' + username + '/database.json',JSON.stringify(json, null, 4), function(err){
+                     if (err){
+                         console.log("błąd w zapisie.");
+                         console.log(err);
+                     } 
+                      else{
+                          console.log("Dodano te dane?!");
+                      }
+                  });       
+
+                  done=true;
+                }
+            }));  
+
+
+
 app.get('',function(req,res){
       res.render("index.jade");
 });
@@ -144,7 +158,7 @@ app.get('',function(req,res){
                         res.redirect('/dashboard');
                         username = req.body.email;
                        fs.mkdir('./uploads/' + username );
-                       fs.writeFile('./uploads/' + username + "/" + "database" + ".json", '{"files":[] }');
+                       fs.writeFile('./uploads/' + req.body.email + "/" + "database" + ".json", '{"files":[] }');
                     }
         });
         });
@@ -161,8 +175,16 @@ app.get('',function(req,res){
                 else{
                     if (req.body.password === user.password){
                         req.session.user = user;
-                        res.render("index.jade");
-                        fs.readFile('./uploads/' + user.cookieName + "/" + "database.json")
+
+                       username = req.body.email;
+                       console.log(username);
+                        
+                        fs.readFile('./uploads/' + "name5@name.com" +"/database.json", function(err, data){
+                            if (err) {throw err};
+                            if (readFile = true) console.log("File loaded.");
+                                json = JSON.parse(data);  
+                                res.render('index.jade');                         
+                        }); 
                     }
                     else {
                         res.render('login.jade', { error: 'Invalid email or password.'});
@@ -187,7 +209,6 @@ app.get('',function(req,res){
             else{
                 res.redirect('/login');
             }
-            console.log(req.body);
             res.render("dashboard.jade");
         });
 
@@ -202,13 +223,14 @@ app.get('',function(req,res){
         
         
 app.post('',function(req,res){
-  if(done==true){     
+       
+  if(done==true){   
+      
         console.log(req.files);
-        res.redirect("/login");
+        res.redirect('/');
   }     
 });         
-});
-               
+              
 /*Run the server.*/
 app.listen(3000,function(){
     console.log("Serwer pracuje na porcie 3000");

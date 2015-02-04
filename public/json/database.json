@@ -1,53 +1,5 @@
 {
     "files": [
-        {
-            "name": "index (2015-01-03 11:00:01)",
-            "originalname": "index.html",
-            "extension": "html",
-            "size": "0KB",
-            "encoding": "7bit"
-        },
-        {
-            "name": "index (2015-01-03 10:59:41)",
-            "originalname": "index.html",
-            "extension": "html",
-            "size": "0KB",
-            "encoding": "7bit"
-        },
-        {
-            "name": "index (2015-01-03 10:56:40)",
-            "originalname": "index.html",
-            "extension": "html",
-            "size": "0KB",
-            "encoding": "7bit"
-        },
-        {
-            "name": "index (2015-01-03 10:56:25)",
-            "originalname": "index.html",
-            "extension": "html",
-            "size": "0KB",
-            "encoding": "7bit"
-        },
-        {
-            "name": "index (2015-01-03 10:56:10)",
-            "originalname": "index.html",
-            "extension": "html",
-            "size": "0KB",
-            "encoding": "7bit"
-        },
-        {
-            "name": "database (2015-01-03 10:53:24)",
-            "originalname": "database.json",
-            "extension": "json",
-            "size": "0KB",
-            "encoding": "7bit"
-        },
-        {
-            "name": "index (2015-01-03 10:29:20)",
-            "originalname": "index.html",
-            "extension": "html",
-            "size": "0KB",
-            "encoding": "7bit"
-        }
+    
     ]
 }
