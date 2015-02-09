@@ -31,6 +31,7 @@ var less = require('less-middleware');
 var path = require('path');
 var multer = require('multer');
 var port = process.env.PORT || 3000;
+var id = 0;
 
 app.use(less(path.join(__dirname, 'public/stylesheets')));
 app.use('/img', static(__dirname + '/public/img'));
@@ -51,17 +52,14 @@ app.use(static(path.join(__dirname, '/public')));
             aciveDuration: 5 * 60 * 1000,
         }));
 
-
         app.set('view engine', 'jade');
         app.locals.pretty = true;
 
 var outputFilename = 'public/json/database.json';
 var file_name = "";
 var date = new Date();
-var username = "";
-var json = "";
-var link = './uploads/' + username;
-var upload = "./uploads";
+json_files = "";
+var logindata = "";
 
 function change(x)
 {
@@ -75,11 +73,9 @@ function change(x)
 }
 
 var d = " (" + date.getFullYear() + "-" + change(date.getMonth())+ "-" + change(date.getDay())+ " " + change(date.getHours())+ ":" + change(date.getMinutes())+ ":" + change(date.getSeconds()) + ")";
-  
-            
-                app.use(multer({ 
-                dest: './uploads',
-                    
+
+                app.use(multer({                     
+                dest: './uploads',                   
                 rename: function (fieldname, filename) {               
                         return filename + Date.now();
                     },
@@ -87,14 +83,12 @@ var d = " (" + date.getFullYear() + "-" + change(date.getMonth())+ "-" + change(
                 onFileUploadStart: function (file) {
                   console.log(file.originalname + ' jest dodawany ...')
                 },
-                onFileUploadComplete: function (file, originalname, extension, size, encoding) {
+                onFileUploadComplete: function (file, name, originalname, extension, size, encoding) {
                   console.log(file.originalname + ' dodano do  ' + file.path)
-                  
-                  mv(file.path, './uploads/' + username + '/' + file.originalname, function(err){
-                      if (err) throw "jakis error";
-                      console.log("przeniesiono?!");
+                    
+                  mv(file.path, './uploads/' + logindata + '/' + file.name, function(err){
+                     // if (err) throw "jakis error"                     
                   });
-                  
                   
                   var number = file.extension.length + 1;
 
@@ -106,11 +100,13 @@ var d = " (" + date.getFullYear() + "-" + change(date.getMonth())+ "-" + change(
                       "encoding": file.encoding
                   };
 
-                  json.files.push(file_data);
+                        console.log(file_data);                   
+                        json_files.files.push(file_data);                  
+                        console.log("przed wrzuceniem do JSON");
+                    
+                    
 
-                    console.log("Username is : -----------" + username);    
-
-                  fs.writeFile('./uploads/' + username + '/database.json',JSON.stringify(json, null, 4), function(err){
+                  fs.writeFile('./uploads/' + logindata + '/database.json',JSON.stringify(json_files, null, 4), function(err){
                      if (err){
                          console.log("błąd w zapisie.");
                          console.log(err);
@@ -118,12 +114,14 @@ var d = " (" + date.getFullYear() + "-" + change(date.getMonth())+ "-" + change(
                       else{
                           console.log("Dodano te dane?!");
                       }
-                  });       
+                      console.log("po wrzuceniu");
+                 });       
 
                   done=true;
                 }
-            }));  
-
+            })); 
+    
+                      
 
 
 app.get('',function(req,res){
@@ -157,14 +155,16 @@ app.get('',function(req,res){
                 else{
                         res.redirect('/dashboard');
                         username = req.body.email;
-                       fs.mkdir('./uploads/' + username );
-                       fs.writeFile('./uploads/' + req.body.email + "/" + "database" + ".json", '{"files":[] }');
-                    }
+                        fs.mkdir('./uploads/' + username );
+                        fs.writeFile('./uploads/' + req.body.email + "/" + "database" + ".json", '{"files":[] }');
+                        fs.writeFile('./uploads/' + req.body.email + '/' + "username.txt", req.body.email);
+                    };
         });
         });
 
         app.get('/login', function(req,res){
             res.render("login.jade");
+            
         }); 
         
         app.post('/login', function(req,res){
@@ -175,16 +175,19 @@ app.get('',function(req,res){
                 else{
                     if (req.body.password === user.password){
                         req.session.user = user;
-
-                       username = req.body.email;
-                       console.log(username);
                         
-                        fs.readFile('./uploads/' + "name5@name.com" +"/database.json", function(err, data){
-                            if (err) {throw err};
-                            if (readFile = true) console.log("File loaded.");
-                                json = JSON.parse(data);  
-                                res.render('index.jade');                         
+                        var file_name = "./uploads/users.json";
+                        var user = {'user': req.body.email};
+                        
+                        logindata = req.body.email;
+                        console.log(logindata);
+                       
+                        fs.readFile('./uploads/' + req.body.email + "/database.json", function(err, data){
+                            res.render('index.jade');    
+                            json_files = JSON.parse(data);  
+                                      
                         }); 
+                                              
                     }
                     else {
                         res.render('login.jade', { error: 'Invalid email or password.'});
@@ -218,16 +221,12 @@ app.get('',function(req,res){
 
         app.get('/logout', function(req, res){
            res.redirect("/"); 
-        });
-        
-        
-        
-app.post('',function(req,res){
-       
+        });        
+
+app.post('/uploaded',function(req,res){
   if(done==true){   
-      
-        console.log(req.files);
-        res.redirect('/');
+    //  console.log(req + "to req");
+        res.redirect('login?email=' + logindata + '&password=' + req.body.password);
   }     
 });         
               
@@ -235,3 +234,4 @@ app.post('',function(req,res){
 app.listen(3000,function(){
     console.log("Serwer pracuje na porcie 3000");
 });
+

@@ -1,4 +1,7 @@
-$.getJSON("../json/database.json", function(data){
+
+
+
+$.getJSON("../../uploads/kulwik@gmail.com/database.json", function(data){
     var dane = data;
     var wpis = "Brak plikow";
     var out = "<table>" + "<tr>" + "<td>" + "Nazwa pliku" + "</td>" + "<td>" + "Rozmiar pliku" + "</td>" + "<td>" + "Rozszerzenie" + "</td>" + "</tr>";
