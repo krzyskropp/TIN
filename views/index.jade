@@ -20,6 +20,7 @@ html
       ul           
           a.log(href='logout')  Wyloguj
           br
+          br
           |            
           form#uploadForm(enctype='multipart/form-data', action='uploaded', method='post')
             input(type='file', name='userPhoto')
@@ -34,37 +35,9 @@ html
       p Filebox
       |         
       |         
-      p
-        img#button(src='./img/+.jpg')
-        |             
-        img#button(src='./img/-.jpg')
-        |             
-        img#button(src='./img/list.png')
-        |             
-        input#search(type='text', placeholder=' search')
-      |       
       |         
       #table
-        table(rules='rows')
-          tr
-            td(style='width: 35px')
-            |                     
-            td Name
-            |                     
-            td File Type
-            |                     
-            td Input Date
-          |                 
-          |                 
-          tr
-            td
-              img(src='./img/box.png', alt='')
-            |                     
-            td books.jpg
-            |                     
-            td image (JPG)
-            |                     
-            td 12.01.2014 19:05
+        
   |     
   script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js')
   |     

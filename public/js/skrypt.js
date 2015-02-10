@@ -1,7 +1,12 @@
+// zmienna pozwalajaca przechowac zawartosc pliku user.txt w ktorym znajduje sie login zalogowanego uzytkownika
+var x;
 
+// pobieranie pliku user.txt
+$.get('../uploads/user.txt', function(data){
+      x = data;
 
-
-$.getJSON("../../uploads/kulwik@gmail.com/database.json", function(data){
+// wyswietlanie tabeli zawierajacej dane z pliku JSON
+$.getJSON("../uploads/" + x +"/database.json", function(data){
     var dane = data;
     var wpis = "Brak plikow";
     var out = "<table>" + "<tr>" + "<td>" + "Nazwa pliku" + "</td>" + "<td>" + "Rozmiar pliku" + "</td>" + "<td>" + "Rozszerzenie" + "</td>" + "</tr>";
@@ -21,5 +26,7 @@ $.getJSON("../../uploads/kulwik@gmail.com/database.json", function(data){
     
      out += "</table>";
      document.getElementById("table").innerHTML = out;
+}); 
 });
+
 

@@ -3,20 +3,20 @@
 
 var app = require("express")();
 var httpServer = require("http").Server(app);
-var io = require("socket.io")(httpServer);
+//var io = require("socket.io")(httpServer);
 var done = false;
-var fs = require('fs');
+var fs = require('fs'); // operacje na plikach
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var session = require('client-sessions');
 var mv = require('mv');
 
     var Schema = mongoose.Schema;
-    var ObjectId = Schema.ObjectId;
+  //  var ObjectId = Schema.ObjectId;
 
     //mongoose user model
     var User = mongoose.model('User', new Schema({
-        id: ObjectId,
+    //    id: ObjectId,
         firstName: String,
         lastName: String,
         email: { 
@@ -27,7 +27,7 @@ var mv = require('mv');
     }));
 
 var static = require('serve-static');
-var less = require('less-middleware');
+var less = require('less-middleware'); 
 var path = require('path');
 var multer = require('multer');
 var port = process.env.PORT || 3000;
@@ -39,12 +39,12 @@ app.use('/js/jquery.min.js', static(__dirname + '/bower_components/jquery/dist/j
 app.use('/js/jquery.min.map', static(__dirname + '/bower_components/jquery/dist/jquery.min.map'));
 app.use(static(path.join(__dirname, '/public')));
 
-    //connect to mongodb auth is a name of collection in MongoDB
+    // sciezka w parametrze to sciezka do kolekcji w mongodb
         mongoose.connect('mongodb://localhost/auth');
 
-    // middleware
+    // middleware pozwala na wykonywanie funkcji req i res
        app.use(bodyParser.urlencoded({extended : true}));
-    // configure session
+    // konfiguracja sesji po zalogowaniu
         app.use(session({           
             cookieName: 'session',
             secret: 'randomnametokryptsession',
@@ -52,30 +52,33 @@ app.use(static(path.join(__dirname, '/public')));
             aciveDuration: 5 * 60 * 1000,
         }));
 
-        app.set('view engine', 'jade');
-        app.locals.pretty = true;
+        app.set('view engine', 'jade'); // wyswietlanie widokow napisanych w jade
+       // app.locals.pretty = true;
 
-var outputFilename = 'public/json/database.json';
+//var outputFilename = 'public/json/database.json'; 
 var file_name = "";
-var date = new Date();
-json_files = "";
-var logindata = "";
+var date = new Date(); // data w milisekundach do zakodowania nazwy pliku
+json_files = ""; // zmienna wymagana do dodawania obiektu do JSON
+var logindata = ""; // zmienna wymagana do przeniesienia wrzuconego pliku do odpowiedniego katalogu
 
-function change(x)
-{
-    if (x<10){
-        x= "0" + x;
-        return x;
+// funkcja zamieniajaca 1 na 01
+    function change(x)
+    {
+        if (x<10){
+            x= "0" + x;
+            return x;
+        }
+        else{
+            return x;
+        }
     }
-    else{
-        return x;
-    }
-}
 
+// zmienna formująca nazwę pliku wyświetlaną na stronie
 var d = " (" + date.getFullYear() + "-" + change(date.getMonth())+ "-" + change(date.getDay())+ " " + change(date.getHours())+ ":" + change(date.getMinutes())+ ":" + change(date.getSeconds()) + ")";
 
+                // multer wykorzystuwany do uploadu pliku
                 app.use(multer({                     
-                dest: './uploads',                   
+                dest: './public/uploads/',                   
                 rename: function (fieldname, filename) {               
                         return filename + Date.now();
                     },
@@ -85,13 +88,16 @@ var d = " (" + date.getFullYear() + "-" + change(date.getMonth())+ "-" + change(
                 },
                 onFileUploadComplete: function (file, name, originalname, extension, size, encoding) {
                   console.log(file.originalname + ' dodano do  ' + file.path)
-                    
-                  mv(file.path, './uploads/' + logindata + '/' + file.name, function(err){
+                   
+                  // mv to rozbudowany fs rename
+                  mv(file.path, './public/uploads/' + logindata + '/' + file.name, function(err){
                      // if (err) throw "jakis error"                     
                   });
                   
+                  // zmienna ktora pozwala na usuniecie z nazwy rozszerzenia wraz z .
                   var number = file.extension.length + 1;
 
+                  // obiekt JSON z danymi z wrzuconego pliku  
                   var file_data = {
                       "name": file.originalname.slice(0, -number)+d,
                       "originalname": file.originalname,
@@ -104,9 +110,8 @@ var d = " (" + date.getFullYear() + "-" + change(date.getMonth())+ "-" + change(
                         json_files.files.push(file_data);                  
                         console.log("przed wrzuceniem do JSON");
                     
-                    
-
-                  fs.writeFile('./uploads/' + logindata + '/database.json',JSON.stringify(json_files, null, 4), function(err){
+                  // zapisywanie do JSON
+                  fs.writeFile('./public/uploads/' + logindata + '/database.json',JSON.stringify(json_files, null, 4), function(err){
                      if (err){
                          console.log("błąd w zapisie.");
                          console.log(err);
@@ -128,12 +133,13 @@ app.get('',function(req,res){
       res.render("index.jade");
 });
 
-        // render views to login
+        // renderowanie widoków
         app.get('/register', function(req,res){
             res.render("register.jade");
         }); 
         
         app.post('/register', function(req,res){
+            // model wykorzystywany do MongoDB
             var user = new User({            
                 firstName: req.body.firstName,
                 lastName: req.body.lastName,
@@ -141,6 +147,7 @@ app.get('',function(req,res){
                 password: req.body.password
             });
             
+            // funkcja zapisująca dane z formularza rejestracji zgodnie z modelem do MongoDB
             user.save(function(err) {
                 if(err) {
                     var err = 'Błąd przy rejestracji! Spróbuj ponownie';
@@ -153,11 +160,14 @@ app.get('',function(req,res){
                     res.render('register.jade', { error: error});     
             } 
                 else{
-                        res.redirect('/dashboard');
+                        res.redirect('/login');
                         username = req.body.email;
-                        fs.mkdir('./uploads/' + username );
-                        fs.writeFile('./uploads/' + req.body.email + "/" + "database" + ".json", '{"files":[] }');
-                        fs.writeFile('./uploads/' + req.body.email + '/' + "username.txt", req.body.email);
+                        // tworzenie katalogu  który będzie bazą plików dla użytkownika
+                        fs.mkdir('./public/uploads/' + username );
+                        // tworzenie bazy o plikach JSON
+                        fs.writeFile('./public/uploads/' + req.body.email + "/" + "database" + ".json", '{"files":[] }');
+                        // pomocniczy plik tekstowy zawierający login użytkownika
+                        fs.writeFile('./public/uploads/' + req.body.email + '/' + "username.txt", req.body.email);
                     };
         });
         });
@@ -168,26 +178,31 @@ app.get('',function(req,res){
         }); 
         
         app.post('/login', function(req,res){
+            // porównanie wprowadzonych danych z formularza z bazą danych
             User.findOne({ email: req.body.email }, function (err, user){
                 if (!user){
                     res.render('login.jade', { error: 'Invalid email or password.'});
                 }
                 else{
                     if (req.body.password === user.password){
+                        
+                        //pobieranie sesji uzytkownika
                         req.session.user = user;
                         
-                        var file_name = "./uploads/users.json";
-                        var user = {'user': req.body.email};
+                        var file_name = "./public/uploads/users.json";
                         
                         logindata = req.body.email;
                         console.log(logindata);
                        
-                        fs.readFile('./uploads/' + req.body.email + "/database.json", function(err, data){
+                        // odczytywanie po zalogowaniu pliku db.JSON nalezacego do zalogowanego uzytkownika
+                        fs.readFile('./public/uploads/' + req.body.email + "/database.json", function(err, data){
                             res.render('index.jade');    
-                            json_files = JSON.parse(data);  
-                                      
-                        }); 
-                                              
+                            json_files = JSON.parse(data);               
+                        });                                              
+                         
+                        // zapisanie zalogowanego uzytkownika do pliku umozliwiajace dostep do konkretnego katalogu uzytkownika
+                        fs.writeFile('./public/uploads/user.txt', req.body.email);
+                        
                     }
                     else {
                         res.render('login.jade', { error: 'Invalid email or password.'});
@@ -201,11 +216,10 @@ app.get('',function(req,res){
                 User.findOne({ email: req.session.user.email}, function(err, user){
                     if (!user){
                         req.session.reset();
-                        res.redirect('/login');
+                        res.render("login.jade");
                     }
                     else{
-                        res.locals.user = user;
-                        res.render('dashboard.jade')
+                        res.render("login.jade");
                     }
                 });
             }
@@ -223,14 +237,21 @@ app.get('',function(req,res){
            res.redirect("/"); 
         });        
 
+
+// metoda get po wrzuceniu pliku
+app.get('/uploaded', function(req,res){
+   res.render('index.jade');
+});
+
+
+// metoda post wysylajaca plik
 app.post('/uploaded',function(req,res){
   if(done==true){   
-    //  console.log(req + "to req");
-        res.redirect('login?email=' + logindata + '&password=' + req.body.password);
+        res.redirect('uploaded');
   }     
 });         
               
-/*Run the server.*/
+// start serwera
 app.listen(3000,function(){
     console.log("Serwer pracuje na porcie 3000");
 });
